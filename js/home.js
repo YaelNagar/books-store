@@ -25,7 +25,7 @@ const showAllBooks = () => {
         const tdTitle = document.createElement("td");
         tdTitle.textContent = `${booksList[i].title}`;
         const tdPrice = document.createElement("td");
-        tdPrice.textContent = `${booksList[i].price}`;
+        tdPrice.textContent = `${booksList[i].price} ₪`;
         const tdAction = document.createElement("td");
         tdAction.classList.add("read");
         tdAction.textContent = "Read";
@@ -63,7 +63,51 @@ const ShowDetails = (bookId) => {
     div.classList.add("detailsDiv");
     let CoverImage = document.createElement("img");
     CoverImage.src = `${showBook[0].image}`;
+    CoverImage.classList.add("CoverImage")
     div.appendChild(CoverImage);
+
+    const container = document.createElement('div');
+    container.classList.add("detailsContainer");
+
+    let price = document.createElement("p");
+    price.textContent = `price: ${showBook[0].price} ₪`;
+
+    let rateDiv = document.createElement("div");
+    rateDiv.classList.add("rate");
+    let rate = document.createElement("p");
+    rate.textContent = "rate:";
+    const decreaseButton = document.createElement('button');
+    decreaseButton.textContent = '-';
+    decreaseButton.id = 'decrease';
+
+    const numberInput = document.createElement('div');
+    numberInput.type = 'number';
+    numberInput.id = 'numberInput';
+    numberInput.textContent = `${showBook[0].rate}`; // ערך התחלתי
+
+    const increaseButton = document.createElement('button');
+    increaseButton.textContent = '+';
+    increaseButton.id = 'increase';
+
+    container.appendChild(price);
+    rateDiv.appendChild(rate);
+    rateDiv.appendChild(decreaseButton);
+    rateDiv.appendChild(numberInput);
+    rateDiv.appendChild(increaseButton);
+    container.appendChild(rateDiv);
+    div.appendChild(container);
+
+    // הוספת אירועים לכפתורים
+    increaseButton.addEventListener('click', () => {
+        numberInput.textContent = parseInt(numberInput.textContent) + 1; // העלה את הערך ב-1
+    });
+
+    decreaseButton.addEventListener('click', () => {
+        numberInput.textContent = parseInt(numberInput.textContent) - 1; // הורד את הערך ב-1
+    });
+
+
+    detailsCard.appendChild(div)
 }
 
 const updateDetails = (bookId) => {

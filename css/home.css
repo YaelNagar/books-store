@@ -14,10 +14,11 @@ body {
 
 .table-container {
     flex: 1;
-    margin-right: 20px; /* רווח בין הטבלה לדיב */
+    margin-right: 20px;
+    /* רווח בין הטבלה לדיב */
     background-color: #fff;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
@@ -26,7 +27,8 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -37,10 +39,11 @@ th {
 }
 
 .details-container {
-    flex: 0 0 30%; /* גובה דיב של ההצגה */
+    flex: 0 0 30%;
+    /* גובה דיב של ההצגה */
     background-color: #fff;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 15px;
     display: none;
 }
@@ -49,11 +52,22 @@ th {
     margin-top: 0;
 }
 
-h2{
+h2 {
     text-align: center;
 }
 
-.detailsDiv{
+p {
+    margin: 0;
+}
+
+.CoverImage {
+    width: 30%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.detailsDiv {
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -74,4 +88,11 @@ h2{
 
 .navContent {
     color: white;
+}
+
+.rate{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
