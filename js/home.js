@@ -1,14 +1,17 @@
 import data from '../data/books.json' with {type: 'json'}
 
-//יצירת מערך בלוקל סטורז
+// יצירת מערך בלוקל סטורז
 let booksList = JSON.parse(localStorage.getItem("booksList")) || [];
-//דחיפת הנתונים ללוקל סטורז
-localStorage.setItem("booksList", JSON.stringify(data.books));
+
+// אם המערך ריק, דחיפת הנתונים
+if (booksList.length === 0) {
+    booksList = data.books; // טוען מהקובץ
+    localStorage.setItem("booksList", JSON.stringify(booksList)); // שומר בלוקל סטורז
+}
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (booksList) {
-        showAllBooks();
-    }
+    showAllBooks();
+    document.getElementById("addbutton").addEventListener('click', () => createForm(1));
 });
 
 const showAllBooks = () => {
@@ -33,7 +36,7 @@ const showAllBooks = () => {
         const tdUpdate = document.createElement("td");
         tdUpdate.classList.add("update");
         tdUpdate.textContent = "Update";
-        tdUpdate.addEventListener('click', () => updateDetails(parseInt(tdId.textContent)));
+        tdUpdate.addEventListener('click', () => createForm(2));
         const tdDelete = document.createElement("td");
         tdDelete.classList.add("delete");
         tdDelete.textContent = "🗑️";
@@ -45,7 +48,6 @@ const showAllBooks = () => {
         row.appendChild(tdAction);
         row.appendChild(tdUpdate);
         row.appendChild(tdDelete);
-        row.id = `row${i}`;
         tableBody.appendChild(row);
     }
 }
@@ -99,20 +101,114 @@ const ShowDetails = (bookId) => {
 
     // הוספת אירועים לכפתורים
     increaseButton.addEventListener('click', () => {
+        //לעדכן בstorage
         numberInput.textContent = parseInt(numberInput.textContent) + 1; // העלה את הערך ב-1
+        showBook[0].rate++;
+        updateDetails(showBook[0]);
     });
 
     decreaseButton.addEventListener('click', () => {
         numberInput.textContent = parseInt(numberInput.textContent) - 1; // הורד את הערך ב-1
+        showBook[0].rate--;
+        updateDetails(showBook[0]);
     });
-
-
     detailsCard.appendChild(div)
 }
 
-const updateDetails = (bookId) => {
-    booksList = JSON.parse(localStorage.getItem("booksList"));
+const updateOrAdd = (bookData, flag) => {
+    flag == 1 ? addBook(bookData) : updateDetails(bookData);
 }
+
+const addBook = (bookData) => {
+    let blackScrean = document.getElementsByClassName("blackOpacityDiv")[0];
+    document.getElementsByClassName("container")[0].removeChild(blackScrean);
+    console.log("add");
+    // עדכון המערך המקומי
+    debugger
+    bookData.id = parseInt(bookData.id);
+    booksList.push(bookData);
+    localStorage.setItem("booksList", JSON.stringify(booksList));
+    // הצגת הטבלה המעודכנת
+    showAllBooks();
+    console.log(booksList);
+}
+
+const updateDetails = (bookData) => {
+    debugger
+    let blackScrean = document.getElementsByClassName("blackOpacityDiv")[0];
+    if (blackScrean)
+        document.getElementsByClassName("container")[0].removeChild(blackScrean);
+    console.log("update");
+    let bookToUpdate = booksList.find(book => book.id == bookData.id);
+    let indexBookToUpdate = booksList.findIndex(book => book.id == bookData.id);
+    if (indexBookToUpdate == -1)
+        window.alert("this book is not exist please add it before you update");
+    debugger
+    bookData.title != '' ? bookToUpdate.title = bookData.title : bookToUpdate.title = booksList[indexBookToUpdate].title;
+    bookData.price != '' ? bookToUpdate.price = bookData.price : bookToUpdate.price = booksList[indexBookToUpdate].price;
+    bookData.image != '' ? bookToUpdate.image = bookData.image : bookToUpdate.image = booksList[indexBookToUpdate].image;
+    bookData.rate != '' ? bookToUpdate.rate = bookData.rate : bookToUpdate.rate = booksList[indexBookToUpdate].rate;
+    booksList[indexBookToUpdate] = { ...bookToUpdate };
+    localStorage.setItem("booksList", JSON.stringify(booksList));
+    showAllBooks();
+}
+
+const createForm = (flag) => {
+    let opacityDiv = document.createElement("div");
+    opacityDiv.classList.add("blackOpacityDiv");
+    let h1 = document.createElement("h1");
+    h1.textContent = "update the book fields:";
+    opacityDiv.appendChild(h1);
+
+    const formContainer = document.getElementById('formContainer');
+    const form = document.createElement('form');
+    form.id = 'dynamicForm';
+
+    //הגדרת מערך של שדות הטופס
+    const fields = [
+        { label: 'ID', name: 'id', type: 'number' },
+        { label: 'Title', name: 'title', type: 'text' },
+        { label: 'Price', name: 'price', type: 'number' },
+        { label: 'Image URL', name: 'image', type: 'url' },
+        { label: 'Rate', name: 'rate', type: 'number' }
+    ];
+
+    fields.forEach(field => {
+        const formGroup = document.createElement('div');
+        formGroup.classList.add('form-group');
+
+        const label = document.createElement('label');
+        label.textContent = field.label;
+        label.setAttribute('for', field.name);
+
+        const input = document.createElement('input');
+        input.type = field.type;
+        input.name = field.name;
+        input.id = field.name;
+
+        formGroup.appendChild(label);
+        formGroup.appendChild(input);
+        form.appendChild(formGroup);
+    });
+
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'send';
+    submitButton.type = 'button'; // מונע שליחה אוטומטית
+    submitButton.addEventListener('click', () => {
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+        console.log(data);
+        updateOrAdd(data, flag);
+    });
+
+    form.appendChild(submitButton);
+    opacityDiv.appendChild(form);
+    document.getElementsByClassName("container")[0].appendChild(opacityDiv);
+};
+
 
 const deleteBook = (bookId) => {
     booksList = JSON.parse(localStorage.getItem("booksList"));
