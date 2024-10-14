@@ -12,13 +12,38 @@ if (booksList.length === 0) {
 document.addEventListener('DOMContentLoaded', () => {
     showAllBooks();
     document.getElementById("addbutton").addEventListener('click', () => createForm(1));
+    selector();
 });
+
+const selector = () => {
+    document.getElementById('chosenTypeId').addEventListener('change', function () {
+        const selectedValue = this.value;
+        //מיון מתאים לפי בחירה
+        if (selectedValue === 'sortByPrice') {
+            sortByPrice();
+        } else if (selectedValue === 'sortByAB') {
+            sortByAB();
+        }
+    });
+}
+
+const sortByPrice = () => {
+    booksList = booksList.sort((a, b) => a.price - b.price);
+    localStorage.setItem("booksList", JSON.stringify(booksList));
+    showAllBooks();
+}
+
+const sortByAB = () => {
+    booksList = booksList.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
+    localStorage.setItem("booksList", JSON.stringify(booksList));
+    showAllBooks();
+}
 
 const showAllBooks = () => {
     const tableBody = document.getElementById("booksTable");
     // ניקוי התוכן הקיים בטבלה
-    while (tableBody.firstChild) {
-        tableBody.removeChild(tableBody.firstChild);
+    while (tableBody.children.length > 1) {
+        tableBody.removeChild(tableBody.lastChild);
     }
 
     for (let i = 0; i < booksList.length; i++) {
@@ -31,14 +56,17 @@ const showAllBooks = () => {
         tdPrice.textContent = `${booksList[i].price} ₪`;
         const tdAction = document.createElement("td");
         tdAction.classList.add("read");
-        tdAction.textContent = "Read";
+        tdAction.classList.add("pointer");
+        tdAction.textContent = "👁️";
         tdAction.addEventListener('click', () => ShowDetails(parseInt(tdId.textContent)));
         const tdUpdate = document.createElement("td");
         tdUpdate.classList.add("update");
-        tdUpdate.textContent = "Update";
-        tdUpdate.addEventListener('click', () => createForm(2));
+        tdUpdate.classList.add("pointer");
+        tdUpdate.textContent = "✏️";
+        tdUpdate.addEventListener('click', () => createForm(2, booksList[i]));
         const tdDelete = document.createElement("td");
         tdDelete.classList.add("delete");
+        tdDelete.classList.add("pointer");
         tdDelete.textContent = "🗑️";
         tdDelete.addEventListener('click', () => deleteBook(parseInt(tdId.textContent)));
 
@@ -53,14 +81,32 @@ const showAllBooks = () => {
 }
 
 const ShowDetails = (bookId) => {
-    debugger
-    let showBook = booksList.filter(b => b.id == bookId);
-    console.log(showBook);
     let detailsCard = document.getElementsByClassName("details-container")[0];
+
+    // הסרת כרטיס קיים
+    while (detailsCard.firstChild) {
+        detailsCard.removeChild(detailsCard.firstChild);
+    }
+
+    let showBook = booksList.filter(b => b.id == bookId);
     detailsCard.style.display = "block";
+
+    // הוספת קלאס show כדי להתחיל את האנימציה
+    setTimeout(() => {
+        detailsCard.classList.add('show');
+    }, 10); // מוסיף לאחר מכן כדי להבטיח שהשינוי יתקיים
+
+    let header = document.createElement("div");
+    header.classList.add("header", "spaceBetween");
     let h2 = document.createElement("h2");
     h2.textContent = showBook[0].title;
-    detailsCard.appendChild(h2);
+    let closeButton = document.createElement("button");
+    closeButton.textContent = 'X';
+    closeButton.addEventListener('click', () => closeShowDetails());
+    header.appendChild(closeButton);
+    header.appendChild(h2);
+    detailsCard.appendChild(header);
+
     let div = document.createElement("div");
     div.classList.add("detailsDiv");
     let CoverImage = document.createElement("img");
@@ -79,15 +125,17 @@ const ShowDetails = (bookId) => {
     let rate = document.createElement("p");
     rate.textContent = "rate:";
     const decreaseButton = document.createElement('button');
+    decreaseButton.classList.add("decreaseButton")
     decreaseButton.textContent = '-';
     decreaseButton.id = 'decrease';
 
     const numberInput = document.createElement('div');
     numberInput.type = 'number';
     numberInput.id = 'numberInput';
-    numberInput.textContent = `${showBook[0].rate}`; // ערך התחלתי
+    numberInput.textContent = `${Math.floor(showBook[0].rate)}`; // ערך התחלתי
 
     const increaseButton = document.createElement('button');
+    increaseButton.classList.add("increaseButton")
     increaseButton.textContent = '+';
     increaseButton.id = 'increase';
 
@@ -113,52 +161,47 @@ const ShowDetails = (bookId) => {
         updateDetails(showBook[0]);
     });
     detailsCard.appendChild(div)
-}
+};
+
 
 const updateOrAdd = (bookData, flag) => {
     flag == 1 ? addBook(bookData) : updateDetails(bookData);
 }
 
 const addBook = (bookData) => {
-    let blackScrean = document.getElementsByClassName("blackOpacityDiv")[0];
-    document.getElementsByClassName("container")[0].removeChild(blackScrean);
-    console.log("add");
+    closeBlackDivButton();
     // עדכון המערך המקומי
-    debugger
+
     bookData.id = parseInt(bookData.id);
     booksList.push(bookData);
     localStorage.setItem("booksList", JSON.stringify(booksList));
     // הצגת הטבלה המעודכנת
     showAllBooks();
-    console.log(booksList);
 }
 
 const updateDetails = (bookData) => {
-    debugger
-    let blackScrean = document.getElementsByClassName("blackOpacityDiv")[0];
-    if (blackScrean)
-        document.getElementsByClassName("container")[0].removeChild(blackScrean);
-    console.log("update");
-    let bookToUpdate = booksList.find(book => book.id == bookData.id);
+    closeBlackDivButton();
     let indexBookToUpdate = booksList.findIndex(book => book.id == bookData.id);
     if (indexBookToUpdate == -1)
         window.alert("this book is not exist please add it before you update");
-    debugger
-    bookData.title != '' ? bookToUpdate.title = bookData.title : bookToUpdate.title = booksList[indexBookToUpdate].title;
-    bookData.price != '' ? bookToUpdate.price = bookData.price : bookToUpdate.price = booksList[indexBookToUpdate].price;
-    bookData.image != '' ? bookToUpdate.image = bookData.image : bookToUpdate.image = booksList[indexBookToUpdate].image;
-    bookData.rate != '' ? bookToUpdate.rate = bookData.rate : bookToUpdate.rate = booksList[indexBookToUpdate].rate;
-    booksList[indexBookToUpdate] = { ...bookToUpdate };
+    booksList[indexBookToUpdate] = { ...bookData };
     localStorage.setItem("booksList", JSON.stringify(booksList));
     showAllBooks();
 }
 
-const createForm = (flag) => {
+const createForm = (flag, bookData) => {
     let opacityDiv = document.createElement("div");
     opacityDiv.classList.add("blackOpacityDiv");
+    let header = document.createElement("div");
+    header.classList.add("header");
     let h1 = document.createElement("h1");
-    h1.textContent = "update the book fields:";
-    opacityDiv.appendChild(h1);
+    flag == 2 ? h1.textContent = "update the book fields:" : h1.textContent = "add the book fields:";
+    let closeButton = document.createElement("button");
+    closeButton.textContent = 'X';
+    closeButton.addEventListener('click', () => closeBlackDivButton());
+    header.appendChild(closeButton);
+    header.appendChild(h1);
+    opacityDiv.appendChild(header);
 
     const formContainer = document.getElementById('formContainer');
     const form = document.createElement('form');
@@ -169,8 +212,8 @@ const createForm = (flag) => {
         { label: 'ID', name: 'id', type: 'number' },
         { label: 'Title', name: 'title', type: 'text' },
         { label: 'Price', name: 'price', type: 'number' },
-        { label: 'Image URL', name: 'image', type: 'url' },
-        { label: 'Rate', name: 'rate', type: 'number' }
+        { label: 'Image URL', name: 'image', type: 'file' },
+        { label: 'Rate', name: 'rate', type: 'number', min: 1, max: 5 }
     ];
 
     fields.forEach(field => {
@@ -186,12 +229,19 @@ const createForm = (flag) => {
         input.name = field.name;
         input.id = field.name;
 
+        // רק למלא את השדות שאינם קובץ
+        if (flag !== 1 && field.type !== 'file') {
+            input.value = bookData[field.name] || ''; // ממלא את השדה עם הערך אם קיים
+        }
+
         formGroup.appendChild(label);
         formGroup.appendChild(input);
         form.appendChild(formGroup);
     });
 
+
     const submitButton = document.createElement('button');
+    submitButton.classList.add("button");
     submitButton.textContent = 'send';
     submitButton.type = 'button'; // מונע שליחה אוטומטית
     submitButton.addEventListener('click', () => {
@@ -200,7 +250,6 @@ const createForm = (flag) => {
         formData.forEach((value, key) => {
             data[key] = value;
         });
-        console.log(data);
         updateOrAdd(data, flag);
     });
 
@@ -220,5 +269,22 @@ const deleteBook = (bookId) => {
     booksList = updateBooksList;
     // הצגת הטבלה המעודכנת
     showAllBooks();
-    console.log(booksList);
 }
+
+const closeBlackDivButton = () => {
+    let blackScrean = document.getElementsByClassName("blackOpacityDiv")[0];
+    if (blackScrean)
+        document.getElementsByClassName("container")[0].removeChild(blackScrean);
+}
+
+// const closeShowDetails = () => {
+//     document.getElementsByClassName("details-container")[0].style.display = "none";
+// }
+
+const closeShowDetails = () => {
+    let detailsCard = document.getElementsByClassName("details-container")[0];
+    detailsCard.classList.remove('show'); // מסיר את האנימציה
+    setTimeout(() => {
+        detailsCard.style.display = "none"; // מסתיר את הכרטיס
+    }, 500); // תואם את זמן האנימציה ב-CSS
+};

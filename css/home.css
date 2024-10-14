@@ -48,13 +48,12 @@ th {
     display: none;
 }
 
-.details-container h2 {
-    margin-top: 0;
-}
-
 h2,
 h1 {
     text-align: center;
+    margin-left: 2%;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 h1 {
@@ -82,17 +81,22 @@ p {
     background-color: #E4E0E1;
     height: 50px;
     color: #3C3D37;
+    display: flex;
+    align-items: center;
+    padding-left: 2%;
 }
 
 .nav {
     display: flex;
     background-color: #3C3D37;
     justify-content: space-between;
+    align-items: center;
     height: 30px;
 }
 
 .navContent {
     color: white;
+    margin: 2%;
 }
 
 .rate {
@@ -116,6 +120,23 @@ p {
     right: 0;
 }
 
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    padding-bottom: 2%;
+}
+
+.spaceBetween {
+    justify-content: space-around;
+}
+
+.row_flex {
+    display: flex;
+    flex-direction: row;
+}
+
 .form-group {
     margin-bottom: 15px;
 }
@@ -133,7 +154,6 @@ input {
 }
 
 button {
-    padding: 10px 15px;
     background-color: #28a745;
     color: white;
     border: none;
@@ -142,4 +162,55 @@ button {
 
 button:hover {
     background-color: #218838;
+}
+
+.button {
+    padding: 10px 15px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+/* רספונסביות להצדת פרטי הספר */
+@media screen and (max-width: 768px) {
+    .details-container {
+        position: fixed;
+        /* כדי שיהיה מעל לשאר התוכן */
+        right: -300px;
+        /* מתחיל מחוץ למסך */
+        width: 300px;
+        /* רוחב הכרטיס */
+        transition: right 0.5s ease-in-out;
+        /* אנימציה לחלק ה-right */
+        background-color: white;
+        /* צבע הרקע של הכרטיס */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        /* צל */
+        z-index: 1000;
+        /* ודא שהכרטיס יהיה מעל לתוכן אחר */
+    }
+
+    .details-container.show {
+        right: 0;
+        /* מיקום הסופי */
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .header {
+        margin-bottom: 3%;
+    }
+
+    .detailsDiv {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .rate {
+        justify-content: flex-start;
+    }
 }
