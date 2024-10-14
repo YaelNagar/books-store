@@ -296,10 +296,6 @@ const closeBlackDivButton = () => {
         document.getElementsByClassName("container")[0].removeChild(blackScrean);
 }
 
-// const closeShowDetails = () => {
-//     document.getElementsByClassName("details-container")[0].style.display = "none";
-// }
-
 const closeShowDetails = () => {
     let detailsCard = document.getElementsByClassName("details-container")[0];
     detailsCard.classList.remove('show'); // מסיר את האנימציה
