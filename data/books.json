@@ -18,98 +18,98 @@
             "id": 3,
             "title": "Life is a Story",
             "price": 45.00,
-            "image": "../images/book1.jpg",
+            "image": "../images/book3.jpg",
             "rate": 4.0
         },
         {
             "id": 4,
             "title": "A Journey in Search of Light",
             "price": 69.90,
-            "image": "../images/book1.jpg",
+            "image": "../images/book4.jpg",
             "rate": 4.9
         },
         {
             "id": 5,
             "title": "Our Universe",
             "price": 49.90,
-            "image": "../images/book1.jpg",
+            "image": "../images/book5.jpg",
             "rate": 4.7
         },
         {
             "id": 6,
             "title": "Recipe for Love",
             "price": 39.90,
-            "image": "../images/book1.jpg",
+            "image": "../images/book6.jpg",
             "rate": 4.6
         },
         {
             "id": 7,
             "title": "Stories from Around the World",
             "price": 55.00,
-            "image": "../images/book1.jpg",
+            "image": "../images/book7.jpg",
             "rate": 4.4
         },
         {
             "id": 8,
             "title": "My Journey",
             "price": 75.00,
-            "image": "../images/book1.jpg",
+            "image": "../images/book8.jpg",
             "rate": 4.8
         },
         {
             "id": 9,
             "title": "The Power of Thought",
             "price": 42.90,
-            "image": "../images/book1.jpg",
+            "image": "../images/book9.jpg",
             "rate": 4.5
         },
         {
             "id": 10,
             "title": "The Wonderful World of Wildlife",
             "price": 65.00,
-            "image": "../images/book1.jpg",
+            "image": "../images/book10.jpg",
             "rate": 4.9
         },
         {
             "id": 11,
             "title": "The Power Within",
             "price": 54.90,
-            "image": "../images/book1.jpg",
+            "image": "../images/book11.jpg",
             "rate": 4.6
         },
         {
             "id": 12,
             "title": "The History of Music",
             "price": 48.00,
-            "image": "../images/book1.jpg",
+            "image": "../images/book12.jpg",
             "rate": 4.7
         },
         {
             "id": 13,
             "title": "Secrets of the Earth",
             "price": 52.50,
-            "image": "../images/book1.jpg",
+            "image": "../images/book13.jpg",
             "rate": 4.8
         },
         {
             "id": 14,
             "title": "Nature in All Its Glory",
             "price": 63.00,
-            "image": "../images/book1.jpg",
+            "image": "../images/book14.jpg",
             "rate": 4.9
         },
         {
             "id": 15,
             "title": "Seasonal Cooking",
             "price": 41.50,
-            "image": "../images/book1.jpg",
+            "image": "../images/book15.jpg",
             "rate": 4.4
         },
         {
             "id": 16,
             "title": "Our Future",
             "price": 70.00,
-            "image": "../images/book1.jpg",
+            "image": "../images/book16.jpg",
             "rate": 4.7
         },
         {
