@@ -2,6 +2,7 @@ import data from '../data/books.json' with {type: 'json'}
 
 // יצירת מערך בלוקל סטורז
 let booksList = JSON.parse(localStorage.getItem("booksList")) || [];
+let sortSelect = '';
 
 // אם המערך ריק, דחיפת הנתונים
 if (booksList.length === 0) {
@@ -12,12 +13,9 @@ if (booksList.length === 0) {
 document.addEventListener('DOMContentLoaded', () => {
     showAllBooks();
     document.getElementById("addbutton").addEventListener('click', () => createForm(1));
-    selector();
-});
-
-const selector = () => {
     document.getElementById('chosenTypeId').addEventListener('change', function () {
         const selectedValue = this.value;
+        sortSelect = this.value;
         //מיון מתאים לפי בחירה
         if (selectedValue === 'sortByPrice') {
             sortByPrice();
@@ -25,6 +23,14 @@ const selector = () => {
             sortByAB();
         }
     });
+});
+
+const selector = () => {
+    if (sortSelect === 'sortByPrice') {
+        sortByPrice();
+    } else if (selectedValue === 'sortByAB') {
+        sortByAB();
+    }
 }
 
 const sortByPrice = () => {
@@ -169,24 +175,28 @@ const updateOrAdd = (bookData, flag) => {
 }
 
 const addBook = (bookData) => {
+    if (booksList.findIndex(book => book.id == bookData.id) != -1) {
+        window.alert("this book is exist you can try update his fileds");
+        closeBlackDivButton();
+        return
+    }
     closeBlackDivButton();
     // עדכון המערך המקומי
-
     bookData.id = parseInt(bookData.id);
     booksList.push(bookData);
     localStorage.setItem("booksList", JSON.stringify(booksList));
     // הצגת הטבלה המעודכנת
     showAllBooks();
+    selector();
 }
 
 const updateDetails = (bookData) => {
     closeBlackDivButton();
     let indexBookToUpdate = booksList.findIndex(book => book.id == bookData.id);
-    if (indexBookToUpdate == -1)
-        window.alert("this book is not exist please add it before you update");
     booksList[indexBookToUpdate] = { ...bookData };
     localStorage.setItem("booksList", JSON.stringify(booksList));
     showAllBooks();
+    selector();
 }
 
 const createForm = (flag, bookData) => {
@@ -208,13 +218,22 @@ const createForm = (flag, bookData) => {
     form.id = 'dynamicForm';
 
     //הגדרת מערך של שדות הטופס
-    const fields = [
-        { label: 'ID', name: 'id', type: 'number' },
-        { label: 'Title', name: 'title', type: 'text' },
-        { label: 'Price', name: 'price', type: 'number' },
-        { label: 'Image URL', name: 'image', type: 'file' },
-        { label: 'Rate', name: 'rate', type: 'number', min: 1, max: 5 }
-    ];
+    let fields = [];
+    if (flag == 1)
+        fields = [
+            { label: 'ID', name: 'id', type: 'number', required: true },
+            { label: 'Title', name: 'title', type: 'text' },
+            { label: 'Price', name: 'price', type: 'number' },
+            { label: 'Image URL', name: 'image', type: 'file' },
+            { label: 'Rate', name: 'rate', type: 'number', min: 1, max: 5 }
+        ];
+    else
+        fields = [
+            { label: 'Title', name: 'title', type: 'text' },
+            { label: 'Price', name: 'price', type: 'number' },
+            { label: 'Image URL', name: 'image', type: 'file' },
+            { label: 'Rate', name: 'rate', type: 'number', min: 1, max: 5 }
+        ];
 
     fields.forEach(field => {
         const formGroup = document.createElement('div');
