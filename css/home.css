@@ -158,6 +158,7 @@ button {
     color: white;
     border: none;
     cursor: pointer;
+    height: 100%;
 }
 
 button:hover {
@@ -166,6 +167,7 @@ button:hover {
 
 .button {
     padding: 10px 15px;
+    height: auto;
 }
 
 .pointer {
