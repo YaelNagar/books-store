@@ -4,6 +4,8 @@ import data from '../data/books.json' with {type: 'json'}
 let booksList = JSON.parse(localStorage.getItem("booksList")) || [];
 let sortSelect = '';
 
+let pagintionCount = 10;
+
 // אם המערך ריק, דחיפת הנתונים
 if (booksList.length === 0) {
     booksList = data.books; // טוען מהקובץ
@@ -23,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sortByAB();
         }
     });
+    pagentation();
 });
 
 const selector = () => {
@@ -52,7 +55,7 @@ const showAllBooks = () => {
         tableBody.removeChild(tableBody.lastChild);
     }
 
-    for (let i = 0; i < booksList.length; i++) {
+    for (let i = 0; i < pagintionCount; i++) {
         const row = document.createElement('tr');
         const tdId = document.createElement("td");
         tdId.textContent = `${booksList[i].id}`;
@@ -191,6 +194,7 @@ const addBook = (bookData) => {
 }
 
 const updateDetails = (bookData) => {
+    debugger
     closeBlackDivButton();
     let indexBookToUpdate = booksList.findIndex(book => book.id == bookData.id);
     booksList[indexBookToUpdate] = { ...bookData };
@@ -218,17 +222,8 @@ const createForm = (flag, bookData) => {
     form.id = 'dynamicForm';
 
     //הגדרת מערך של שדות הטופס
-    let fields = [];
-    if (flag == 1)
-        fields = [
+     let fields = [
             { label: 'ID', name: 'id', type: 'number', required: true },
-            { label: 'Title', name: 'title', type: 'text' },
-            { label: 'Price', name: 'price', type: 'number' },
-            { label: 'Image URL', name: 'image', type: 'file' },
-            { label: 'Rate', name: 'rate', type: 'number', min: 1, max: 5 }
-        ];
-    else
-        fields = [
             { label: 'Title', name: 'title', type: 'text' },
             { label: 'Price', name: 'price', type: 'number' },
             { label: 'Image URL', name: 'image', type: 'file' },
@@ -247,6 +242,11 @@ const createForm = (flag, bookData) => {
         input.type = field.type;
         input.name = field.name;
         input.id = field.name;
+
+        //במצב עריכה, id לא מאופשר
+        if (field.name === 'id' && flag !== 1) {
+            input.setAttribute('readonly', true);
+        }
 
         // רק למלא את השדות שאינם קובץ
         if (flag !== 1 && field.type !== 'file') {
@@ -303,3 +303,27 @@ const closeShowDetails = () => {
         detailsCard.style.display = "none"; // מסתיר את הכרטיס
     }, 500); // תואם את זמן האנימציה ב-CSS
 };
+
+const pagentation = () => {
+    document.getElementsByClassName("pagentationDiv")[0] && document.getElementsByClassName("pagentationDiv")[0].removeChild(pagentationButton)
+    let pagentationDiv = document.createElement("div");
+    pagentationDiv.classList.add("pagentationDiv")
+    let pagentationNumber;
+    booksList.length % 10 == 0 ? pagentationNumber = booksList.length / 10 : pagentationNumber = (Math.floor(booksList.length / 10) + 1);
+    for (let i = 0; i < pagentationNumber; i++) {
+        let pagentationButton = document.createElement("button");
+        pagentationButton.classList.add("pagentation");
+        pagentationButton.id = `${i + 1}`;
+        pagentationButton.addEventListener('click', () => lengthToShow(pagentationButton.id));
+        pagentationButton.textContent = `${i + 1}`;
+        pagentationDiv.appendChild(pagentationButton);
+    }
+    document.getElementsByTagName("footer")[0].appendChild(pagentationDiv);
+}
+
+const lengthToShow = (id) => {
+    if (id == (Math.floor(booksList.length / 10) + 1))
+        pagintionCount = booksList.length;
+    else pagintionCount = id * 10;
+    showAllBooks()
+}

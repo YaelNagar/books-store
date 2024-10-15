@@ -39,7 +39,7 @@ th {
 }
 
 .details-container {
-    flex: 0 0 30%;
+    flex: 0 0 40%;
     /* גובה דיב של ההצגה */
     background-color: #fff;
     border-radius: 5px;
@@ -65,7 +65,7 @@ p {
 }
 
 .CoverImage {
-    width: 30%;
+    width: 40%;
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -172,6 +172,19 @@ button:hover {
 
 .pointer {
     cursor: pointer;
+}
+
+.pagentationDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.pagentation {
+    padding: 1%;
+    margin: 2%;
 }
 
 /* רספונסביות להצדת פרטי הספר */
