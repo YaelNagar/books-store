@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const selector = () => {
     if (sortSelect === 'sortByPrice') {
         sortByPrice();
-    } else if (selectedValue === 'sortByAB') {
+    } else if (sortSelect === 'sortByAB') {
         sortByAB();
     }
 }
@@ -189,6 +189,8 @@ const addBook = (bookData) => {
     booksList.push(bookData);
     localStorage.setItem("booksList", JSON.stringify(booksList));
     // הצגת הטבלה המעודכנת
+    debugger
+    pagentation();
     showAllBooks();
     selector();
 }
@@ -199,6 +201,7 @@ const updateDetails = (bookData) => {
     let indexBookToUpdate = booksList.findIndex(book => book.id == bookData.id);
     booksList[indexBookToUpdate] = { ...bookData };
     localStorage.setItem("booksList", JSON.stringify(booksList));
+    pagentation();
     showAllBooks();
     selector();
 }
@@ -305,9 +308,14 @@ const closeShowDetails = () => {
 };
 
 const pagentation = () => {
-    document.getElementsByClassName("pagentationDiv")[0] && document.getElementsByClassName("pagentationDiv")[0].removeChild(pagentationButton)
+    debugger
+    let pag=document.getElementById("pagentationDiv");
+    if(pag){
+         while (pag.firstChild) 
+        pag.removeChild(pag.firstChild);
+    }
     let pagentationDiv = document.createElement("div");
-    pagentationDiv.classList.add("pagentationDiv")
+    pagentationDiv.id="pagentationDiv";
     let pagentationNumber;
     booksList.length % 10 == 0 ? pagentationNumber = booksList.length / 10 : pagentationNumber = (Math.floor(booksList.length / 10) + 1);
     for (let i = 0; i < pagentationNumber; i++) {

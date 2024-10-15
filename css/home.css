@@ -174,7 +174,7 @@ button:hover {
     cursor: pointer;
 }
 
-.pagentationDiv {
+#pagentationDiv {
     display: flex;
     flex-direction: row;
     justify-content: center;
