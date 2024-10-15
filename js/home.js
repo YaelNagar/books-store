@@ -201,7 +201,6 @@ const updateDetails = (bookData) => {
     let indexBookToUpdate = booksList.findIndex(book => book.id == bookData.id);
     booksList[indexBookToUpdate] = { ...bookData };
     localStorage.setItem("booksList", JSON.stringify(booksList));
-    pagentation();
     showAllBooks();
     selector();
 }
@@ -290,6 +289,7 @@ const deleteBook = (bookId) => {
     // עדכון המערך המקומי
     booksList = updateBooksList;
     // הצגת הטבלה המעודכנת
+    pagentation();
     showAllBooks();
 }
 
@@ -309,15 +309,16 @@ const closeShowDetails = () => {
 
 const pagentation = () => {
     debugger
-    let pag=document.getElementById("pagentationDiv");
+    let pag=document.getElementsByTagName("footer")[0];
     if(pag){
-         while (pag.firstChild) 
-        pag.removeChild(pag.firstChild);
+        pag.innerHTML='';
     }
     let pagentationDiv = document.createElement("div");
     pagentationDiv.id="pagentationDiv";
     let pagentationNumber;
     booksList.length % 10 == 0 ? pagentationNumber = booksList.length / 10 : pagentationNumber = (Math.floor(booksList.length / 10) + 1);
+    if(pagentationNumber==1)
+        return
     for (let i = 0; i < pagentationNumber; i++) {
         let pagentationButton = document.createElement("button");
         pagentationButton.classList.add("pagentation");
