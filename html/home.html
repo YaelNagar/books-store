@@ -1,54 +1,41 @@
 <!DOC YPE html>
-    <html lang="en">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/home.css" />
+    <script defer type="module" src="../js/home.js"></script>
+    <title>booksShop</title>
+  </head>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../css/home.css" />
-        <script defer type="module" src="../js/home.js"></script>
-        <title>booksShop</title>
-    </head>
+  <body>
+    <div class="boosErp">
+      <p>Books ERP</p>
+    </div>
+    <div class="nav">
+      <div id="addbutton" class="navContent pointer">+New book</div>
+      <div class="navContent row_flex">Load Data</div>
+    </div>
 
-    <body>
-
-        <div class="boosErp">
-            <p>Books ERP</p>
-        </div>
-        <div class="nav">
-            <div id="addbutton" class="navContent pointer">+New book</div>
-            <div class="navContent row_flex">Load Data
-                <div class="selector">
-                    <select name="chosenType" id="chosenTypeId">
-                        <option id="sortByPrice" value="sortByPrice">sort by price</option>
-                        <option id="sortByAB" value="sortByAB">sort by AB</option>
-                    </select>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="container">
-            <div class="table-container">
-                <table id="booksTable">
-                    <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>title ▲ </th>
-                            <th>price ▲ </th>
-                            <th colspan="3">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-            </div>
-            <div class="details-container">
-                <!-- פרטים נוספים -->
-            </div>
-        </div>
-        <div id="formContainer" style="display: none;"></div>
-        <footer></footer>
-    </body>
-
-    </html>
+    <div class="container">
+      <div class="table-container">
+        <table id="booksTable">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th id="titleSort" class="pointer">title ▲</th>
+              <th id="priceSort" class="pointer">price ▲</th>
+              <th colspan="3">Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="details-container">
+        <!-- פרטים נוספים -->
+      </div>
+    </div>
+    <div id="formContainer" style="display: none"></div>
+    <footer></footer>
+  </body>
+</html>

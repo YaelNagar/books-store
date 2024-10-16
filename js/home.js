@@ -14,47 +14,48 @@ if (booksList.length === 0) {
 
 document.addEventListener('DOMContentLoaded', () => {
     showAllBooks();
+    document.getElementById("priceSort").addEventListener('click',()=>sortByPrice());
+    document.getElementById("titleSort").addEventListener('click',()=>sortByAB());
     document.getElementById("addbutton").addEventListener('click', () => createForm(1));
-    document.getElementById('chosenTypeId').addEventListener('change', function () {
-        const selectedValue = this.value;
-        sortSelect = this.value;
-        //מיון מתאים לפי בחירה
-        if (selectedValue === 'sortByPrice') {
-            sortByPrice();
-        } else if (selectedValue === 'sortByAB') {
-            sortByAB();
-        }
-    });
     pagentation();
 });
 
 const selector = () => {
-    if (sortSelect === 'sortByPrice') {
+    if (document.getElementById("priceSort").textContent === 'price ▼') {
         sortByPrice();
-    } else if (sortSelect === 'sortByAB') {
+    } else if (document.getElementById("titleSort").textContent === 'title ▼') {
         sortByAB();
     }
 }
 
+//מיון לפי מחיר 
 const sortByPrice = () => {
+    document.getElementById("priceSort").textContent="price ▼";
+    document.getElementById("titleSort").textContent="title ▲";
     booksList = booksList.sort((a, b) => a.price - b.price);
     localStorage.setItem("booksList", JSON.stringify(booksList));
     showAllBooks();
 }
 
+//מיון לפי שם ספר ללא התייחסות לאותיות קטנות וגדולות
 const sortByAB = () => {
+    debugger
+    document.getElementById("titleSort").textContent="title ▼";
+    document.getElementById("priceSort").textContent="price ▲";
     booksList = booksList.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
     localStorage.setItem("booksList", JSON.stringify(booksList));
     showAllBooks();
 }
 
+//הצגת הdata
+//בתחילה מציג 10 ראשונים בלבד
 const showAllBooks = () => {
     const tableBody = document.getElementById("booksTable");
     // ניקוי התוכן הקיים בטבלה
     while (tableBody.children.length > 1) {
         tableBody.removeChild(tableBody.lastChild);
     }
-
+    //יצירת תוכן הטבלה
     for (let i = 0; i < pagintionCount; i++) {
         const row = document.createElement('tr');
         const tdId = document.createElement("td");
@@ -91,20 +92,16 @@ const showAllBooks = () => {
 
 const ShowDetails = (bookId) => {
     let detailsCard = document.getElementsByClassName("details-container")[0];
-
     // הסרת כרטיס קיים
-    while (detailsCard.firstChild) {
-        detailsCard.removeChild(detailsCard.firstChild);
-    }
-
+    detailsCard.innerHTML='';
     let showBook = booksList.filter(b => b.id == bookId);
     detailsCard.style.display = "block";
 
     // הוספת קלאס show כדי להתחיל את האנימציה
     setTimeout(() => {
         detailsCard.classList.add('show');
-    }, 10); // מוסיף לאחר מכן כדי להבטיח שהשינוי יתקיים
-
+    }, 10); // ממתין כדי להבטיח שהשינוי יתקיים
+    
     let header = document.createElement("div");
     header.classList.add("header", "spaceBetween");
     let h2 = document.createElement("h2");
@@ -141,7 +138,7 @@ const ShowDetails = (bookId) => {
     const numberInput = document.createElement('div');
     numberInput.type = 'number';
     numberInput.id = 'numberInput';
-    numberInput.textContent = `${Math.floor(showBook[0].rate)}`; // ערך התחלתי
+    numberInput.textContent = `${Math.floor(showBook[0].rate)}`; 
 
     const increaseButton = document.createElement('button');
     increaseButton.classList.add("increaseButton")
@@ -156,12 +153,11 @@ const ShowDetails = (bookId) => {
     container.appendChild(rateDiv);
     div.appendChild(container);
 
-    // הוספת אירועים לכפתורים
+    // הוספת אירועים לכפתורים של הדירוג
     increaseButton.addEventListener('click', () => {
-        //לעדכן בstorage
         numberInput.textContent = parseInt(numberInput.textContent) + 1; // העלה את הערך ב-1
         showBook[0].rate++;
-        updateDetails(showBook[0]);
+        updateDetails(showBook[0]);// עדכון לשמירת השינויים
     });
 
     decreaseButton.addEventListener('click', () => {
@@ -174,37 +170,35 @@ const ShowDetails = (bookId) => {
 
 
 const updateOrAdd = (bookData, flag) => {
-    flag == 1 ? addBook(bookData) : updateDetails(bookData);
+    flag == 1 ? addBook(bookData) : updateDetails(bookData);//בדיקה האם הטופס של יצירה או עדכון
 }
 
 const addBook = (bookData) => {
-    if (booksList.findIndex(book => book.id == bookData.id) != -1) {
+    closeBlackDivButton();
+    if (booksList.findIndex(book => book.id == bookData.id) != -1) {// בדיקה אם הספר קיים כבר
         window.alert("this book is exist you can try update his fileds");
-        closeBlackDivButton();
         return
     }
-    closeBlackDivButton();
     // עדכון המערך המקומי
     bookData.id = parseInt(bookData.id);
     booksList.push(bookData);
     localStorage.setItem("booksList", JSON.stringify(booksList));
     // הצגת הטבלה המעודכנת
-    debugger
     pagentation();
     showAllBooks();
     selector();
 }
 
 const updateDetails = (bookData) => {
-    debugger
     closeBlackDivButton();
     let indexBookToUpdate = booksList.findIndex(book => book.id == bookData.id);
     booksList[indexBookToUpdate] = { ...bookData };
     localStorage.setItem("booksList", JSON.stringify(booksList));
-    showAllBooks();
-    selector();
+    showAllBooks();// הצגת הרשימה לאחר העדכונים
+    selector();// במידה ונבחר מיון מעדכן את המיון לאחר השינויים
 }
 
+//יצירת טופס לעדכון או הוספה
 const createForm = (flag, bookData) => {
     let opacityDiv = document.createElement("div");
     opacityDiv.classList.add("blackOpacityDiv");
@@ -232,6 +226,7 @@ const createForm = (flag, bookData) => {
             { label: 'Rate', name: 'rate', type: 'number', min: 1, max: 5 }
         ];
 
+    //יצירת הטפס בלולאה על השדות שהוגדרו
     fields.forEach(field => {
         const formGroup = document.createElement('div');
         formGroup.classList.add('form-group');
@@ -250,7 +245,7 @@ const createForm = (flag, bookData) => {
             input.setAttribute('readonly', true);
         }
 
-        // רק למלא את השדות שאינם קובץ
+        // ממלא את השדות שאינם קובץ -תמונה
         if (flag !== 1 && field.type !== 'file') {
             input.value = bookData[field.name] || ''; // ממלא את השדה עם הערך אם קיים
         }
@@ -288,18 +283,18 @@ const deleteBook = (bookId) => {
     localStorage.setItem("booksList", JSON.stringify(updateBooksList));
     // עדכון המערך המקומי
     booksList = updateBooksList;
-    // הצגת הטבלה המעודכנת
-    pagentation();
-    showAllBooks();
+    pagentation();// עידכון מספר העמודים למעבר באתר
+    showAllBooks();// הצגת הטבלה המעודכנת
 }
 
+//סגירת הדיב שמציג את הטפסים
 const closeBlackDivButton = () => {
     let blackScrean = document.getElementsByClassName("blackOpacityDiv")[0];
     if (blackScrean)
         document.getElementsByClassName("container")[0].removeChild(blackScrean);
 }
 
-const closeShowDetails = () => {
+const closeShowDetails = () => {//הצגת הפרטים באנימציה מימין במסך פלאפון
     let detailsCard = document.getElementsByClassName("details-container")[0];
     detailsCard.classList.remove('show'); // מסיר את האנימציה
     setTimeout(() => {
@@ -307,17 +302,15 @@ const closeShowDetails = () => {
     }, 500); // תואם את זמן האנימציה ב-CSS
 };
 
-const pagentation = () => {
-    debugger
+const pagentation = () => {//יצירת המעבר בין עמודי הצגת הספרים באתר
     let pag=document.getElementsByTagName("footer")[0];
-    if(pag){
+    if(pag)
         pag.innerHTML='';
-    }
     let pagentationDiv = document.createElement("div");
     pagentationDiv.id="pagentationDiv";
     let pagentationNumber;
     booksList.length % 10 == 0 ? pagentationNumber = booksList.length / 10 : pagentationNumber = (Math.floor(booksList.length / 10) + 1);
-    if(pagentationNumber==1)
+    if(pagentationNumber==1)//במידה וקיימים עד 10 ספרים אין אפשרות למעבר
         return
     for (let i = 0; i < pagentationNumber; i++) {
         let pagentationButton = document.createElement("button");
@@ -330,9 +323,9 @@ const pagentation = () => {
     document.getElementsByTagName("footer")[0].appendChild(pagentationDiv);
 }
 
-const lengthToShow = (id) => {
-    if (id == (Math.floor(booksList.length / 10) + 1))
-        pagintionCount = booksList.length;
-    else pagintionCount = id * 10;
-    showAllBooks()
+const lengthToShow = (id) => {//מעדכן את המשתנה עליו רצה לולאת ההצגה של הטבלה
+    if (id == (Math.floor(booksList.length / 10) + 1))//בעת לחיצה על העמוד האחרון
+        pagintionCount = booksList.length;//הצגת כלל הספרים
+    else pagintionCount = id * 10;//אחרת הצגה בכפולות של 10
+    showAllBooks()//עדכון הטבלה המוצגת לכמות 
 }
